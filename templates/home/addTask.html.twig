@@ -34,14 +34,7 @@
                   <div><label for="tache_description">Description</label>{{ form_widget(taskForm.description, {'attr': {'hidden': true}}) }}</div>
                   <div class="flex-form">
                      <div><label for="tache_deadline">Date</label>{{ form_widget(taskForm.deadline, {'attr': {'hidden': true}}) }}</div>
-                     <div>
-                        <label for="tache_statut" class="required">Statut</label>
-                        <select id="tache_statut" name="tache[statut]">
-                           <option value="13">To Do</option>
-                           <option value="14">Doing</option>
-                           <option value="15">Done</option>
-                        </select>
-                     </div>
+                    <div><label for="tache_statut">Statut</label>{{ form_widget(taskForm.statutId, {'attr': {'hidden': true}}) }}</div>
                   </div>
                   <div>
                      <label for="tache_employe">Membre</label>

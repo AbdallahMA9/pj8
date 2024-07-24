@@ -29,7 +29,7 @@ class HomeController extends AbstractController
     {
 
         $project = $projectRepository->find($id);        
-        $statuts = $statutRepository->findby(['projectId' => $project]);
+        $statuts = $statutRepository->findAll();
         $tasks = $taskRepository->findBy(['projectId' => $project]);
 
         return $this->render('home/project.html.twig', [
@@ -43,16 +43,18 @@ class HomeController extends AbstractController
 
 
     #[Route('/add_task/{id}', name: 'app_task_add')]
-    public function register($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository): Response
+    public function register($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
-
+        $project = $projectRepository->find($id);  
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $task->setProjectId($id);
+            $task->setProjectId($project);
+
+            
             $entityManager->persist($task);
             $entityManager->flush();
 
@@ -69,29 +71,27 @@ class HomeController extends AbstractController
     public function editTask($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository): Response
     {    
         $task = $taskRepository->find($id);
+    
         if (!$task) {
             throw $this->createNotFoundException('No task found for id '.$id);
         }
-
+    
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
-
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $task->setProjectId($id);
-            $entityManager->persist($task);
+            // Pas besoin de persister une entité existante
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_home');
         }
-
+    
         return $this->render('home/editTask.html.twig', [
             'taskForm' => $form->createView(),
-            'project' =>$id,
-            'task' =>$task,
+            'task' => $task,
         ]);
     }
+    
 
     #[Route('/delete_task/{id}', name: 'app_task_delete')]
     public function deleteTask($id, EntityManagerInterface $entityManager, TaskRepository $taskRepository): Response
@@ -99,7 +99,7 @@ class HomeController extends AbstractController
         $task = $taskRepository->find($id);
         $ProjectId = $task->getProjectId();
         $idP = $ProjectId->getId();
-        
+
         $entityManager->remove($task);
         $entityManager->flush();
 

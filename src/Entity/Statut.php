@@ -15,10 +15,6 @@ class Statut
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Project $projectId = null;
-
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
@@ -36,18 +32,6 @@ class Statut
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getProjectId(): ?Project
-    {
-        return $this->projectId;
-    }
-
-    public function setProjectId(?Project $projectId): static
-    {
-        $this->projectId = $projectId;
-
-        return $this;
     }
 
     public function getLabel(): ?string

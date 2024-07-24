@@ -22,7 +22,8 @@ class TaskType extends AbstractType
             ])
             ->add('statutId', EntityType::class, [
                 'class' => Statut::class,
-                'choice_label' => 'id',
+                'choice_label' => 'label',
+                'choice_value' => 'id',
             ])
             
         ;
