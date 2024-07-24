@@ -19,7 +19,7 @@ class Project
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deadline = null;
 
     #[ORM\Column]
@@ -29,9 +29,9 @@ class Project
     private ?bool $archive = null;
 
     /**
-     * @var Collection<int, user>
+     * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: user::class)]
+    #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $users;
 
     /**
