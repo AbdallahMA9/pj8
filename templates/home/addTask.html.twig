@@ -38,11 +38,7 @@
                   </div>
                   <div>
                      <label for="tache_employe">Membre</label>
-                     <select id="tache_employe" name="tache[employe]">
-                        <option value=""></option>
-                        <option value="13">Natalie Dillon</option>
-                        <option value="14">Demi Baker</option>
-                     </select>
+                    {{ form_widget(taskForm.userId, {'attr': {'hidden': true}}) }}
                   </div>
                   <br>
                   <button class="button button-submit">Ajouter</button>

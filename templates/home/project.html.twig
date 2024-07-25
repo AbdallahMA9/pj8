@@ -1,67 +1,76 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-      <div id="main-container">
-         <nav>
-            <a href="{{ path('app_home') }}" id="logo">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo TaskLinker" />
-            </a>
-            <ul id="main-menu">
-               <li class="active">
-                  <a href="{{ path('app_home') }}">
-                  <i class="fa-solid fa-list-check"></i> Projets
-                  </a>
-               </li>
-               <li>
-                  <a href="{{ path('app_users') }}">
-                  <i class="fa-regular fa-user"></i> Équipe
-                  </a>
-               </li>
-            </ul>
-         </nav>
-         <main>
-            <header>
-               <div id="current-user"></div>
-               <div id="title-page">
-                    <div class="flex-header">
-                        <h1>{{project.name}}</h1>
-                        <div class="user-list">
-                            <div class="avatar">ND</div>
-                            <div class="avatar">DB</div>
-                        </div>
-                        <a class="button" href="projet-edit.html">Modifier</a>
-                    </div>
-               </div>
-            </header>
-            <div id="content">
-               <div id="tasks-container">
-                    {% for statut in statuts %}
-                        <div class="task-column">
-                            <h2>{{statut.label}}</h2>
-                            <div class="tasks-list">
-                                {% for task in tasks %}
-                                    {% if task.statutId == statut %}
-                                    <a class="task" href="{{ path('app_task_edit',{'id': task.id}) }}">
-                                    <h3>{{task.title}}</h3>
-                                    <p>{{task.description}}</p>
-                                    <div class="task-infos">
-                                        <div class="task-deadline">
-                                            <i class="fa-regular fa-calendar"></i> {{ task.deadline|date('d/m/Y') }}
-                                        </div>
-                                    </div>
-                                    </a>
+	<div id="main-container">
+		<nav>
+			<a href="{{ path('app_home') }}" id="logo">
+				<img src="{{ asset('img/logo.png') }}" alt="Logo TaskLinker"/>
+			</a>
+			<ul id="main-menu">
+				<li class="active">
+					<a href="{{ path('app_home') }}">
+						<i class="fa-solid fa-list-check"></i>
+						Projets
+					</a>
+				</li>
+				<li>
+					<a href="{{ path('app_users') }}">
+						<i class="fa-regular fa-user"></i>
+						Équipe
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<main>
+			<header>
+				<div id="current-user"></div>
+				<div id="title-page">
+					<div class="flex-header">
+						<h1>{{project.name}}</h1>
+						<div class="user-list">
+							{% for user in project.users %}
+								<div class="avatar">{{ user.firstName|first|upper }}{{ user.lastName|first|upper }}</div>
+							{% endfor %}
+						</div>
+						<a class="button" href="{{ path('app_project_edit',{'id': project.id}) }}">Modifier</a>
+					</div>
+				</div>
+			</header>
+			<div id="content">
+				<div id="tasks-container">
+					{% for statut in statuts %}
+						<div class="task-column">
+							<h2>{{statut.label}}</h2>
+							<div class="tasks-list">
+								{% for task in tasks %}
+									{% if task.statutId == statut %}
+										<a class="task" href="{{ path('app_task_edit',{'id': task.id}) }}">
+											<h3>{{task.title}}</h3>
+											<p>{{task.description}}</p>
+											<div class="task-infos">
+												<div class="task-deadline">
+													<i class="fa-regular fa-calendar"></i>
+													{{ task.deadline|date('d/m/Y') }}
+												</div>
+                                                {% if task.userId %}
+												<div class="mini-user">
+													{{ task.userId.firstName|first|upper }}{{ task.userId.lastName|first|upper }}
+												</div>
+                                                {% endif %}
+											</div>
+										</a>
 
-                                    {% endif %}
-                                {% endfor %}
-                                <a href="{{ path('app_task_add',{'id': project.id}) }}" class="task-add">
-                                + Ajouter une tâche
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-               </div>
-            </div>
-         </main>
-      </div>
+									{% endif %}
+								{% endfor %}
+								<a href="{{ path('app_task_add',{'id': project.id}) }}" class="task-add">
+									+ Ajouter une tâche
+								</a>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</main>
+	</div>
 
 {% endblock %}

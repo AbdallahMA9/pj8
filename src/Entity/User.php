@@ -45,9 +45,16 @@ class User
     #[ORM\OneToMany(targetEntity: Crenaux::class, mappedBy: 'userId')]
     private Collection $crenauxes;
 
+    /**
+     * @var Collection<int, Task>
+     */
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'userId')]
+    private Collection $tasks;
+
     public function __construct()
     {
         $this->crenauxes = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,6 +189,36 @@ class User
             // set the owning side to null (unless already changed)
             if ($crenaux->getUserId() === $this) {
                 $crenaux->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): static
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getUserId() === $this) {
+                $task->setUserId(null);
             }
         }
 

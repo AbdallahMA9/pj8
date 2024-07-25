@@ -37,6 +37,9 @@ class Task
     #[ORM\OneToMany(targetEntity: Crenaux::class, mappedBy: 'taskId')]
     private Collection $crenauxes;
 
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?user $userId = null;
+
     public function __construct()
     {
         $this->crenauxes = new ArrayCollection();
@@ -134,6 +137,18 @@ class Task
                 $crenaux->setTaskId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUserId(): ?user
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?user $userId): static
+    {
+        $this->userId = $userId;
 
         return $this;
     }

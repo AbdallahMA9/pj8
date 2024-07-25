@@ -11,8 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Task;
+use App\Entity\Project;
 use App\Form\TaskType;
-use App\Form\UserType;
+use App\Form\ProjectType;
 use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends AbstractController
@@ -26,42 +27,55 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/users', name: 'app_users')]
-    public function listUsers(UserRepository $userRepository): Response
+    #[Route('/add_project', name: 'app_project_add')]
+    public function addProject(Request $request, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
     {
-        $users = $userRepository->findAll();
-        return $this->render('user/index.html.twig', [
-            'users' => $users,
+        $project = new Project();
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $project->setStartedAt(new \DateTimeImmutable());
+            $project->setArchive(0);
+            $entityManager->persist($project);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('home/addProject.html.twig', [
+            'projectForm' => $form->createView()
         ]);
     }
 
-    #[Route('/edit_user/{id}', name: 'app_user_edit')]
-    public function editUser($id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    #[Route('/edit_project/{id}', name: 'app_project_edit')]
+    public function editProject($id, Request $request, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
     {    
-        $user = $userRepository->find($id);
+        $project = $projectRepository->find($id);
     
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            // Pas besoin de persister une entité existante
             $entityManager->flush();
-            return $this->redirectToRoute('app_users');
+    
+            return $this->redirectToRoute('app_home');
         }
     
-        return $this->render('user/edit.html.twig', [
-            'userForm' => $form->createView(),
+        return $this->render('home/editProject.html.twig', [
+            'projectForm' => $form->createView(),
+            'project' => $project
         ]);
     }
 
-    #[Route('/delete_user/{id}', name: 'app_user_delete')]
-    public function deleteUser($id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    #[Route('/delete_project/{id}', name: 'app_project_delete')]
+    public function deleteProject($id, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
     {    
-        $user = $userRepository->find($id);
+        $project = $projectRepository->find($id);
 
-        $entityManager->remove($user);
+        $entityManager->remove($project);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_users');
+        return $this->redirectToRoute('app_home');
 
     }
 
@@ -84,7 +98,7 @@ class HomeController extends AbstractController
 
 
     #[Route('/add_task/{id}', name: 'app_task_add')]
-    public function register($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
+    public function addTask($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
