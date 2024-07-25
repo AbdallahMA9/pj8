@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ProjectRepository;
+use App\Repository\UserRepository;
 use App\Repository\StatutRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Form\UserType;
 use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends AbstractController
@@ -22,6 +24,45 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'projects' => $projects,
         ]);
+    }
+
+    #[Route('/users', name: 'app_users')]
+    public function listUsers(UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
+        return $this->render('user/index.html.twig', [
+            'users' => $users,
+        ]);
+    }
+
+    #[Route('/edit_user/{id}', name: 'app_user_edit')]
+    public function editUser($id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    {    
+        $user = $userRepository->find($id);
+    
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('app_users');
+        }
+    
+        return $this->render('user/edit.html.twig', [
+            'userForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/delete_user/{id}', name: 'app_user_delete')]
+    public function deleteUser($id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    {    
+        $user = $userRepository->find($id);
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_users');
+
     }
 
     #[Route('/project/{id}', name: 'app_detail')]

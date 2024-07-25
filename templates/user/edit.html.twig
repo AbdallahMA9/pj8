@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+      <div id="main-container">
+         <nav>
+            <a href="index.html" id="logo">
+            <img src="img/logo.png" alt="Logo TaskLinker" />
+            </a>
+            <ul id="main-menu">
+               <li class="">
+                  <a href="index.html">
+                  <i class="fa-solid fa-list-check"></i> Projets
+                  </a>
+               </li>
+               <li class="active">
+                  <a href="employes.html">
+                  <i class="fa-regular fa-user"></i> Équipe
+                  </a>
+               </li>
+            </ul>
+         </nav>
+         <main>
+            <header>
+               <div id="current-user"></div>
+               <div id="title-page">
+                  <h1>Natalie Dillon</h1>
+               </div>
+            </header>
+            <div id="content">
+                {{ form_start(userForm) }}
+                    <div><label for="employe_nom" class="required">Nom</label>{{ form_widget(userForm.lastName, {'attr': {'hidden': true}}) }}</div>
+                    <div><label for="employe_prenom" class="required">Prenom</label>{{ form_widget(userForm.firstName, {'attr': {'hidden': true}}) }}</div>
+                    <div><label for="employe_email" class="required">Email</label>{{ form_widget(userForm.email, {'attr': {'hidden': true}}) }}</div>
+                    <div class="form-flex">
+                        <div><label for="employe_dateArrivee" class="required">Date d&#039;entrée</label>{{ form_widget(userForm.startedAt, {'attr': {'hidden': true}}) }}</div>
+                        <div><label for="employe_statut" class="required">Statut</label>{{ form_widget(userForm.contract, {'attr': {'hidden': true}}) }}</div>
+                    </div>
+                    <button class="button button-submit">Enregistrer</button>
+	            {{ form_end(userForm) }}
+            </div>
+         </main>
+      </div>
+
+{% endblock %}

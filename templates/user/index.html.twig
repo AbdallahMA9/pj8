@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div id="main-container">
+        <nav>
+        <a href="{{ path('app_home') }}" id="logo">
+        <img src="{{ asset('img/logo.png') }}" alt="Logo TaskLinker" />
+        </a>
+        <ul id="main-menu">
+            <li class="">
+                <a href="{{ path('app_home') }}">
+                <i class="fa-solid fa-list-check"></i> Projets
+                </a>
+            </li>
+            <li class="active">
+                <a href="{{ path('app_users') }}">
+                <i class="fa-regular fa-user"></i> Équipe
+                </a>
+            </li>
+        </ul>
+        </nav>
+        <main>
+        <header>
+            <div id="current-user"></div>
+            <div id="title-page">
+                <h1>Équipe</h1>
+            </div>
+        </header>
+        <div id="content">
+            <table id="team-container">
+                <thead>
+                    <tr>
+                    <th>Prénom, Nom</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                        <td>
+                            <div class="employee-infos">
+                                <div class="employee-avatar">
+                                    {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                                </div>
+                                <div class="employee-coords">
+                                    <strong>{{user.firstName}} {{user.lastName}}</strong>
+                                    <span>{{user.email}}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{user.contract}}</td>
+                        <td>
+                            <a class="button button-edit-team" href="{{ path('app_user_edit',{'id': user.id}) }}">
+                            Éditer
+                            </a>
+                            <a class="delete-team" href="{{ path('app_user_delete',{'id': user.id}) }}">
+                            Supprimer
+                            </a>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </main>
+    </div>
+{% endblock %}
