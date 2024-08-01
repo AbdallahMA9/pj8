@@ -23,7 +23,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/edit_user/{id}', name: 'app_user_edit')]
+    #[Route('/edit-user/{id}', name: 'app_user_edit')]
     public function editUser($id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {    
         $user = $userRepository->find($id);
@@ -41,7 +41,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/delete_user/{id}', name: 'app_user_delete')]
+    #[Route('/delete-user/{id}', name: 'app_user_delete')]
     public function deleteUser($id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {    
         $user = $userRepository->find($id);

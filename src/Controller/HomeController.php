@@ -27,7 +27,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/add_project', name: 'app_project_add')]
+    #[Route('/add-project', name: 'app_project_add')]
     public function addProject(Request $request, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
     {
         $project = new Project();
@@ -46,7 +46,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/edit_project/{id}', name: 'app_project_edit')]
+    #[Route('/edit-project/{id}', name: 'app_project_edit')]
     public function editProject($id, Request $request, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
     {    
         $project = $projectRepository->find($id);
@@ -67,7 +67,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/delete_project/{id}', name: 'app_project_delete')]
+    #[Route('/delete-project/{id}', name: 'app_project_delete')]
     public function deleteProject($id, EntityManagerInterface $entityManager, ProjectRepository $projectRepository): Response
     {    
         $project = $projectRepository->find($id);
@@ -97,7 +97,7 @@ class HomeController extends AbstractController
     }
 
 
-    #[Route('/add_task/{id}', name: 'app_task_add')]
+    #[Route('/add-task/{id}', name: 'app_task_add')]
     public function addTask(Project $Id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
     {
         $task = new Task();
@@ -125,7 +125,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/edit_task/{id}', name: 'app_task_edit')]
+    #[Route('/edit-task/{id}', name: 'app_task_edit')]
     public function editTask($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository): Response
     {    
         $task = $taskRepository->find($id);
@@ -151,7 +151,7 @@ class HomeController extends AbstractController
     }
     
 
-    #[Route('/delete_task/{id}', name: 'app_task_delete')]
+    #[Route('/delete-task/{id}', name: 'app_task_delete')]
     public function deleteTask($id, EntityManagerInterface $entityManager, TaskRepository $taskRepository): Response
     {    
         $task = $taskRepository->find($id);
