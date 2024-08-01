@@ -34,6 +34,10 @@
                         <label>Inviter des membres</label>
                         {{ form_widget(projectForm.users, {'attr': {'hidden': true}}) }}
                     </div>
+                    <div>
+                        <label >Archive</label>
+                        {{ form_widget(projectForm.archive) }}
+                    </div>
                     <br>
                     <button class="button button-submit">Modifier</button>
                 {{ form_end(projectForm) }}

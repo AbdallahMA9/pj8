@@ -98,12 +98,15 @@ class HomeController extends AbstractController
 
 
     #[Route('/add_task/{id}', name: 'app_task_add')]
-    public function addTask($id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
+    public function addTask(Project $Id, Request $request, EntityManagerInterface $entityManager, TaskRepository $taskRepository, ProjectRepository $projectRepository): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
-        $project = $projectRepository->find($id);  
+        
+        
+        $project = $Id;
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -118,7 +121,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/addTask.html.twig', [
             'taskForm' => $form->createView(),
-            'project' =>$id,
+            'project' =>$project,
         ]);
     }
 

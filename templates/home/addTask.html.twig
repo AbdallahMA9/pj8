@@ -28,7 +28,6 @@
                </div>
             </header>
             <div id="content">
-               <form action="{{ path('app_task_add',{'id': project}) }}" method="post">
                 {{ form_start(taskForm) }}
                   <div><label for="tache_titre" class="required">Titre de la tâche</label>{{ form_widget(taskForm.title, {'attr': {'hidden': true}}) }}</div>
                   <div><label for="tache_description">Description</label>{{ form_widget(taskForm.description, {'attr': {'hidden': true}}) }}</div>
@@ -43,7 +42,6 @@
                   <br>
                   <button class="button button-submit">Ajouter</button>
                {{ form_end(taskForm) }}
-               </form>
             </div>
          </main>
       </div>

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\UserRepository;
@@ -7,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`User`')]
@@ -19,35 +19,41 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: "L'email ne doit pas être vide.")]
+    #[Assert\Email(
+        message: "L'adresse email '{{ value }}' n'est pas une adresse valide.",
+        checkMX: true
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le prénom ne doit pas être vide.")]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom ne doit pas être vide.")]
     private ?string $lastName = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "Le rôle ne doit pas être nul.")]
     private ?bool $role = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "La vérification ne doit pas être nulle.")]
     private ?bool $isVerified = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "La date de début ne doit pas être nulle.")]
+    #[Assert\Type("\DateTimeImmutable", message: "La date de début doit être une date valide.")]
     private ?\DateTimeImmutable $startedAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le contrat ne doit pas être vide.")]
     private ?string $contract = null;
 
-    /**
-     * @var Collection<int, Crenaux>
-     */
     #[ORM\OneToMany(targetEntity: Crenaux::class, mappedBy: 'userId')]
     private Collection $crenauxes;
 
-    /**
-     * @var Collection<int, Task>
-     */
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'userId')]
     private Collection $tasks;
 
@@ -72,25 +78,6 @@ class User
         $this->email = $email;
 
         return $this;
-    }
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getFirstName(): ?string
@@ -165,9 +152,6 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Crenaux>
-     */
     public function getCrenauxes(): Collection
     {
         return $this->crenauxes;
@@ -186,7 +170,6 @@ class User
     public function removeCrenaux(Crenaux $crenaux): static
     {
         if ($this->crenauxes->removeElement($crenaux)) {
-            // set the owning side to null (unless already changed)
             if ($crenaux->getUserId() === $this) {
                 $crenaux->setUserId(null);
             }
@@ -195,9 +178,6 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Task>
-     */
     public function getTasks(): Collection
     {
         return $this->tasks;
@@ -216,7 +196,6 @@ class User
     public function removeTask(Task $task): static
     {
         if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
             if ($task->getUserId() === $this) {
                 $task->setUserId(null);
             }
