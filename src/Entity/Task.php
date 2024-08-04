@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -17,18 +18,32 @@ class Task
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[Assert\NotNull(message: "Le projet ne doit pas être nul.")]
     private ?Project $projectId = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[Assert\NotNull(message: "Le statut ne doit pas être nul.")]
     private ?Statut $statutId = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre ne doit pas être vide.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le titre ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La description ne doit pas être vide.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "La description ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotNull(message: "La date limite ne doit pas être nulle.")]
+    #[Assert\Type("\DateTimeInterface", message: "La date limite doit être une date valide.")]
     private ?\DateTimeInterface $deadline = null;
 
     /**
@@ -38,7 +53,8 @@ class Task
     private Collection $crenauxes;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    private ?user $userId = null;
+    #[Assert\NotNull(message: "L'utilisateur ne doit pas être nul.")]
+    private ?User $userId = null;
 
     public function __construct()
     {
@@ -49,7 +65,6 @@ class Task
     {
         return $this->id;
     }
-
 
     public function getProjectId(): ?Project
     {
@@ -111,9 +126,6 @@ class Task
         return $this;
     }
 
-    /**
-     * @return Collection<int, Crenaux>
-     */
     public function getCrenauxes(): Collection
     {
         return $this->crenauxes;
@@ -132,7 +144,6 @@ class Task
     public function removeCrenaux(Crenaux $crenaux): static
     {
         if ($this->crenauxes->removeElement($crenaux)) {
-            // set the owning side to null (unless already changed)
             if ($crenaux->getTaskId() === $this) {
                 $crenaux->setTaskId(null);
             }
@@ -141,12 +152,12 @@ class Task
         return $this;
     }
 
-    public function getUserId(): ?user
+    public function getUserId(): ?User
     {
         return $this->userId;
     }
 
-    public function setUserId(?user $userId): static
+    public function setUserId(?User $userId): static
     {
         $this->userId = $userId;
 
