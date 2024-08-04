@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
@@ -17,15 +18,24 @@ class Project
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du projet ne doit pas être vide.")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le nom du projet ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\DateTime(message: "La date limite doit être une date valide.")]
     private ?\DateTimeInterface $deadline = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "La date de début ne doit pas être nulle.")]
+    #[Assert\Type("\DateTimeImmutable", message: "La date de début doit être une date valide.")]
     private ?\DateTimeImmutable $startedAt = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "Le statut d'archivage ne doit pas être nul.")]
     private ?bool $archive = null;
 
     /**
@@ -75,7 +85,7 @@ class Project
         return $this->deadline;
     }
 
-    public function setDeadline(\DateTimeInterface $deadline): static
+    public function setDeadline(?\DateTimeInterface $deadline): static
     {
         $this->deadline = $deadline;
 
@@ -107,14 +117,14 @@ class Project
     }
 
     /**
-     * @return Collection<int, user>
+     * @return Collection<int, User>
      */
     public function getUsers(): Collection
     {
         return $this->users;
     }
 
-    public function addUser(user $user): static
+    public function addUser(User $user): static
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
@@ -123,7 +133,7 @@ class Project
         return $this;
     }
 
-    public function removeUser(user $user): static
+    public function removeUser(User $user): static
     {
         $this->users->removeElement($user);
 
